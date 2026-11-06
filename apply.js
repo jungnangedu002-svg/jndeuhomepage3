@@ -3,7 +3,7 @@
 // 설정 방법: 저장소의 GOOGLE-SETUP.md
 (function () {
   // ↓ 구글 Apps Script를 '웹 앱'으로 배포한 뒤 받은 주소(https://script.google.com/macros/s/.../exec)를 따옴표 안에 넣으세요.
-  var APPS_SCRIPT_URL = '';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6I0N_teGbU-O2xHEqu3kDAL5WoZ3tCZdAj1IPwMk-d7mhqE43R9W5jGLMvAe9zrdZ/exec';
   var TIMES = { '월': '14:00~16:00', '화': '14:00~16:00', '수': '14:00~16:00', '목': '14:00~16:00' };
 
   var dialog = document.getElementById('apply-dialog');
