@@ -209,3 +209,68 @@ a { color: inherit; }
 .slot-label small { font-weight: 500; font-size: 13px; opacity: .8; }
 .program-img .slot-label { color: var(--tone-ink); }
 .program-img.photo-slot { background: var(--tone); outline: 2px dashed color-mix(in srgb, var(--tone-ink) 30%, transparent); outline-offset: -10px; }
+
+/* Apply: status card button */
+.status-card { cursor: pointer; transition: transform .15s, box-shadow .15s; display: flex; flex-direction: column; align-items: flex-start; }
+.status-card:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(60,50,20,.08), 0 14px 32px rgba(60,50,20,.1); }
+.status-card .cta {
+  margin-top: 16px; width: 100%; padding: 12px; border: 0; border-radius: 12px;
+  background: var(--ink); color: #fff; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.status-card .cta[data-full="true"] { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1.5px #cfc8b8; }
+.status-card .cta:focus-visible, .apply-dialog :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Apply: dialog */
+.apply-dialog {
+  width: min(520px, calc(100vw - 24px)); max-height: calc(100dvh - 24px);
+  padding: 0; border: 0; border-radius: 22px; background: var(--surface); color: var(--ink);
+  box-shadow: 0 24px 60px rgba(30, 25, 10, .25);
+}
+.apply-dialog::backdrop { background: rgba(30, 26, 18, .45); }
+.apply-form, .apply-done { padding: 26px; }
+.apply-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.apply-eyebrow { margin: 0 0 2px; font-size: 14px; font-weight: 700; color: var(--accent-ink); }
+.apply-head h2 { margin: 0; font-size: 23px; line-height: 1.35; }
+.apply-close {
+  flex: none; width: 40px; height: 40px; border: 0; border-radius: 50%;
+  background: #f3efe6; font-size: 24px; line-height: 1; cursor: pointer; color: var(--ink);
+}
+.apply-notice { margin: 0 0 18px; padding: 12px 14px; border-radius: 12px; background: var(--cook); color: var(--cook-ink); font-size: 15px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.field { display: block; margin-bottom: 16px; }
+.field > span, .consent legend { display: block; font-weight: 700; margin-bottom: 6px; font-size: 16px; }
+.field em, .consent legend em { color: #c0392b; font-style: normal; }
+.field input {
+  width: 100%; padding: 13px 14px; font: inherit; font-size: 17px; color: var(--ink);
+  border: 1.5px solid #ddd6c6; border-radius: 12px; background: #fff;
+}
+.field input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(224,165,38,.25); }
+.err { display: none; margin-top: 6px; color: #b3261e; font-size: 14px; font-weight: 600; }
+.invalid .err { display: block; }
+.invalid input[type="text"], .invalid input[type="tel"] { border-color: #b3261e; }
+
+.consent { border: 0; margin: 4px 0 0; padding: 0; }
+.consent-box {
+  max-height: 210px; overflow-y: auto; padding: 14px; border-radius: 12px;
+  background: #faf8f3; border: 1px solid var(--line); font-size: 14px; color: #47443d;
+}
+.consent-box table { width: 100%; border-collapse: collapse; }
+.consent-box th { width: 74px; text-align: left; vertical-align: top; padding: 4px 8px 4px 0; color: var(--ink); white-space: nowrap; }
+.consent-box td { padding: 4px 0; }
+.consent-box p { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed #ddd6c6; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; cursor: pointer; font-weight: 600; }
+.check input { flex: none; width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--ink); }
+
+.form-msg { margin: 14px 0 0; font-weight: 600; }
+.form-msg.error { color: #b3261e; }
+.apply-actions { display: flex; gap: 10px; margin-top: 20px; }
+.apply-actions .btn-ghost, .apply-actions .btn { flex: 1; text-align: center; border: 0; font: inherit; font-weight: 700; cursor: pointer; padding: 14px; border-radius: 999px; }
+.btn-ghost { background: #f3efe6; color: var(--ink); }
+.btn-submit:disabled { opacity: .6; cursor: wait; }
+
+.apply-done { text-align: center; padding: 40px 26px 30px; }
+.done-icon { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; background: var(--indep); color: var(--indep-ink); font-size: 32px; font-weight: 800; }
+.apply-done h2 { margin: 0 0 8px; font-size: 23px; }
+.apply-done p { margin: 0 0 22px; color: var(--muted); }
+.apply-done .btn { border: 0; font: inherit; font-weight: 700; cursor: pointer; min-width: 140px; }

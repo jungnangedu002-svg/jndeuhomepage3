@@ -75,7 +75,7 @@
   <section id="status" class="section section-alt">
     <div class="wrap">
       <h2>단과반 모집 현황</h2>
-      <p class="section-desc">14시 요일별 수업의 현재 인원이에요. 반마다 정원은 3명입니다.</p>
+      <p class="section-desc">14시 요일별 수업의 현재 인원이에요. 반마다 정원은 3명이며, 카드를 누르면 바로 신청할 수 있어요.</p>
 
       <ul class="status-grid">
         <li class="status-card">
@@ -84,6 +84,7 @@
           <div class="meter" role="img" aria-label="정원 3명 중 1명"><i style="width:33.3%" class="m-smart"></i></div>
           <p class="count"><strong>1명</strong> / 3명</p>
           <span class="badge open">2자리 남음</span>
+          <button type="button" class="cta" data-apply data-day="월" data-program="스마트 라이프" data-full="false" aria-haspopup="dialog" aria-label="스마트 라이프 신청하기">신청하기 →</button>
         </li>
         <li class="status-card">
           <span class="day">화</span>
@@ -91,6 +92,7 @@
           <div class="meter" role="img" aria-label="정원 3명 중 2명"><i style="width:66.6%" class="m-step"></i></div>
           <p class="count"><strong>2명</strong> / 3명</p>
           <span class="badge open">1자리 남음</span>
+          <button type="button" class="cta" data-apply data-day="화" data-program="스텝업" data-full="false" aria-haspopup="dialog" aria-label="스텝업 신청하기">신청하기 →</button>
         </li>
         <li class="status-card">
           <span class="day">수</span>
@@ -98,6 +100,7 @@
           <div class="meter" role="img" aria-label="정원 3명 중 3명"><i style="width:100%" class="m-craft"></i></div>
           <p class="count"><strong>3명</strong> / 3명</p>
           <span class="badge full">마감</span>
+          <button type="button" class="cta" data-apply data-day="수" data-program="손끝 공예" data-full="true" aria-haspopup="dialog" aria-label="손끝 공예 대기 신청하기">대기 신청하기 →</button>
         </li>
         <li class="status-card">
           <span class="day">목</span>
@@ -105,6 +108,7 @@
           <div class="meter" role="img" aria-label="정원 3명 중 3명"><i style="width:100%" class="m-cook"></i></div>
           <p class="count"><strong>3명</strong> / 3명</p>
           <span class="badge full">마감</span>
+          <button type="button" class="cta" data-apply data-day="목" data-program="요리 산책" data-full="true" aria-haspopup="dialog" aria-label="요리 산책 대기 신청하기">대기 신청하기 →</button>
         </li>
       </ul>
     </div>
@@ -216,5 +220,68 @@
   </div>
 </footer>
 
+<dialog id="apply-dialog" class="apply-dialog" aria-labelledby="apply-title">
+  <form id="apply-form" class="apply-form" novalidate>
+    <div class="apply-head">
+      <div>
+        <p class="apply-eyebrow" id="apply-when"></p>
+        <h2 id="apply-title">수강 신청</h2>
+      </div>
+      <button type="button" class="apply-close" data-close aria-label="닫기">×</button>
+    </div>
+
+    <p class="apply-notice" id="apply-full-notice" hidden>정원이 모두 찼어요. 지금 신청하면 <strong>대기 신청</strong>으로 접수되고, 자리가 나면 연락드려요.</p>
+
+    <input type="hidden" name="프로그램" id="f-program">
+    <input type="hidden" name="신청 구분" id="f-type">
+    <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <label class="field">
+      <span>신청자 <em>*</em></span>
+      <input type="text" name="신청자" id="f-name" autocomplete="name" placeholder="이름을 입력해 주세요" required maxlength="30">
+      <small class="err" data-for="f-name">이름을 입력해 주세요.</small>
+    </label>
+
+    <label class="field">
+      <span>전화번호 <em>*</em></span>
+      <input type="tel" name="전화번호" id="f-phone" autocomplete="tel" inputmode="numeric" placeholder="010-0000-0000" required maxlength="13">
+      <small class="err" data-for="f-phone">전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)</small>
+    </label>
+
+    <fieldset class="consent">
+      <legend>개인정보 수집·이용 동의 <em>*</em></legend>
+      <div class="consent-box" tabindex="0">
+        <table>
+          <tr><th>수집 목적</th><td>단과반 수강 신청 접수, 신청 확인 및 수업 안내 연락</td></tr>
+          <tr><th>수집 항목</th><td>신청자 이름, 전화번호</td></tr>
+          <tr><th>보유 기간</th><td>신청한 프로그램 운영 기간이 끝나면 지체 없이 파기 (최대 1년)</td></tr>
+          <tr><th>전달 방법</th><td>입력한 내용은 이메일 전송 서비스(FormSubmit)를 통해 담당자 이메일로 전달됩니다.</td></tr>
+        </table>
+        <p>개인정보 수집·이용에 동의하지 않을 권리가 있습니다. 다만 동의하지 않으면 수강 신청을 할 수 없습니다.</p>
+      </div>
+      <label class="check">
+        <input type="checkbox" name="개인정보 동의" id="f-agree" value="동의함" required>
+        <span>위 내용을 읽었으며 개인정보 수집·이용에 동의합니다.</span>
+      </label>
+      <small class="err" data-for="f-agree">개인정보 수집·이용에 동의해야 신청할 수 있어요.</small>
+    </fieldset>
+
+    <p class="form-msg" id="apply-msg" role="status" aria-live="polite"></p>
+
+    <div class="apply-actions">
+      <button type="button" class="btn-ghost" data-close>취소</button>
+      <button type="submit" class="btn btn-submit" id="apply-submit">제출하기</button>
+    </div>
+  </form>
+
+  <div class="apply-done" id="apply-done" hidden>
+    <div class="done-icon" aria-hidden="true">✓</div>
+    <h2>신청이 접수되었어요</h2>
+    <p id="apply-done-text"></p>
+    <button type="button" class="btn" data-close>확인</button>
+  </div>
+</dialog>
+
+<script src="apply.js"></script>
 </body>
 </html>
