@@ -193,7 +193,7 @@
     setLabel(playBtn, pageOwned ? '처음부터 다시 듣기' : '음성 안내 듣기');
     pauseBtn.textContent = state === 'paused' ? '계속 듣기' : '일시정지';
     rateBtn.textContent = '속도 ' + RATES[rateIdx].t;
-    rateBtn.setAttribute('aria-label', '말하기 속도: ' + RATES[rateIdx].t + '. 누르면 바뀝니다.');
+    rateBtn.setAttribute('aria-label', '속도 ' + RATES[rateIdx].t + ', 누르면 말하기 속도가 바뀝니다');
     document.querySelectorAll('[data-tts-target]').forEach(function (b) {
       var on = active && owner === b;
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
