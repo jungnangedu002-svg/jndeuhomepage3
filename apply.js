@@ -67,6 +67,11 @@
     else phoneEl.value = d;
   });
 
+  function showError(text) {
+    msg.textContent = text;
+    msg.className = 'form-msg error';
+  }
+
   function setInvalid(el, bad) {
     var wrap = el.closest('.field, .consent');
     if (wrap) wrap.classList.toggle('invalid', bad);
@@ -111,10 +116,25 @@
     submitBtn.textContent = '보내는 중…';
     msg.textContent = '';
 
+    // 내 컴퓨터에서 파일을 바로 연 경우(file://)에는 FormSubmit이 전송을 거부함
+    if (location.protocol === 'file:') {
+      showError('지금은 컴퓨터에 있는 파일을 바로 열어서 메일이 가지 않아요. 인터넷에 배포된 사이트 주소(https://…)에서 다시 시험해 주세요.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '제출하기';
+      return;
+    }
+
     fetch(ENDPOINT, { method: 'POST', headers: { 'Accept': 'application/json' }, body: data })
-      .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, body: j }; }); })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (j) { return { ok: res.ok, status: res.status, body: j }; });
+      })
       .then(function (r) {
-        if (!r.ok || String(r.body.success) === 'false') throw new Error(r.body.message || '전송 실패');
+        var serverMsg = String((r.body && r.body.message) || '');
+        if (!r.ok || String(r.body.success) === 'false') {
+          var err = new Error(serverMsg || ('HTTP ' + r.status));
+          err.server = true;
+          throw err;
+        }
         form.hidden = true;
         done.hidden = false;
         var t = document.getElementById('apply-done-text');
@@ -125,9 +145,18 @@
         t.appendChild(tel);
         t.appendChild(document.createTextNode('(으)로 연락드릴게요.'));
       })
-      .catch(function () {
-        msg.textContent = '신청서를 보내지 못했어요. 잠시 후 다시 시도해 주세요.';
-        msg.className = 'form-msg error';
+      .catch(function (err) {
+        var m = String(err && err.message || '');
+        if (/activat/i.test(m)) {
+          showError('아직 메일 받기가 활성화되지 않았어요. ' + RECIPIENT + ' 메일함(스팸함 포함)에 온 FormSubmit의 "Activate Form" 메일에서 버튼을 눌러 주세요. 활성화한 뒤 다시 제출하면 접수됩니다.');
+        } else if (/web server|html file/i.test(m)) {
+          showError('컴퓨터에 있는 파일을 바로 열어서 메일이 가지 않아요. 배포된 사이트 주소(https://…)에서 다시 시험해 주세요.');
+        } else if (err && err.server) {
+          showError('신청서를 보내지 못했어요. 잠시 후 다시 시도해 주세요. (메일 서비스 응답: ' + m + ')');
+        } else {
+          showError('메일 서비스에 연결하지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.');
+        }
+        if (window.console) console.warn('[신청 전송 실패]', err);
       })
       .finally(function () {
         submitBtn.disabled = false;
