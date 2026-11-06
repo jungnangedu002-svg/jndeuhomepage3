@@ -10,6 +10,20 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<a class="skip-link" href="#top">본문 바로가기</a>
+
+<div class="tts-bar" id="tts-bar" role="region" aria-label="음성 안내" hidden>
+  <button type="button" class="tts-main" id="tts-play" aria-describedby="tts-help">
+    <span class="tts-ico" aria-hidden="true">🔊</span><span class="tts-label">음성 안내 듣기</span>
+  </button>
+  <div class="tts-controls" id="tts-controls" hidden>
+    <button type="button" id="tts-pause">일시정지</button>
+    <button type="button" id="tts-stop">멈춤</button>
+    <button type="button" id="tts-rate" aria-label="말하기 속도: 보통">속도 보통</button>
+  </div>
+  <p class="sr-only" id="tts-help">화면의 내용을 소리 내어 읽어 줍니다. 화면낭독기를 쓰고 있다면 소리가 겹칠 수 있어요.</p>
+</div>
+
 
 <header class="site-header">
   <div class="wrap header-inner">
@@ -22,7 +36,7 @@
   </div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-text">
@@ -47,6 +61,7 @@
 
       <div class="table-scroll">
         <table class="timetable">
+          <caption class="sr-only">단과반 요일별 시간표 (월요일~목요일)</caption>
           <thead>
             <tr><th scope="col">시간</th><th scope="col">월</th><th scope="col">화</th><th scope="col">수</th><th scope="col">목</th></tr>
           </thead>
@@ -75,7 +90,7 @@
   <section id="status" class="section section-alt">
     <div class="wrap">
       <h2>단과반 모집 현황</h2>
-      <p class="section-desc">14시 요일별 수업의 현재 인원이에요. 반마다 정원은 3명이며, 카드를 누르면 바로 신청할 수 있어요.</p>
+      <p class="section-desc">14시 요일별 수업의 현재 인원이에요. 반마다 정원은 3명이며, 카드를 눌러 신청하시면 담당자가 확인 후 연락드리겠습니다.</p>
 
       <ul class="status-grid">
         <li class="status-card">
@@ -216,7 +231,7 @@
 <footer class="site-footer">
   <div class="wrap">
     <p>단과반 운영 시간: 월요일 ~ 목요일, 13:00 ~ 17:00</p>
-    <a href="#top">맨 위로 ↑</a>
+    <a href="#top" aria-label="맨 위로 이동">맨 위로 ↑</a>
   </div>
 </footer>
 
@@ -238,32 +253,33 @@
 
     <label class="field">
       <span>신청자 <em>*</em></span>
-      <input type="text" name="신청자" id="f-name" autocomplete="name" placeholder="이름을 입력해 주세요" required maxlength="30">
-      <small class="err" data-for="f-name">이름을 입력해 주세요.</small>
+      <input type="text" name="신청자" id="f-name" aria-describedby="err-name" autocomplete="name" placeholder="이름을 입력해 주세요" required maxlength="30">
+      <small class="err" id="err-name" data-for="f-name">이름을 입력해 주세요.</small>
     </label>
 
     <label class="field">
       <span>전화번호 <em>*</em></span>
-      <input type="tel" name="전화번호" id="f-phone" autocomplete="tel" inputmode="numeric" placeholder="010-0000-0000" required maxlength="13">
-      <small class="err" data-for="f-phone">전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)</small>
+      <input type="tel" name="전화번호" id="f-phone" aria-describedby="err-phone" autocomplete="tel" inputmode="numeric" placeholder="010-0000-0000" required maxlength="13">
+      <small class="err" id="err-phone" data-for="f-phone">전화번호를 정확히 입력해 주세요. (예: 010-1234-5678)</small>
     </label>
 
     <fieldset class="consent">
       <legend>개인정보 수집·이용 동의 <em>*</em></legend>
-      <div class="consent-box" tabindex="0">
+      <div class="consent-box" tabindex="0" role="group" aria-label="개인정보 수집·이용 안내 내용">
         <table>
-          <tr><th>수집 목적</th><td>단과반 수강 신청 접수, 신청 확인 및 수업 안내 연락</td></tr>
-          <tr><th>수집 항목</th><td>신청자 이름, 전화번호</td></tr>
-          <tr><th>보유 기간</th><td>신청한 프로그램 운영 기간이 끝나면 지체 없이 파기 (최대 1년)</td></tr>
-          <tr><th>전달 방법</th><td>입력한 내용은 구글(Google) 스프레드시트에 저장되고, 담당자 이메일로 전달됩니다.</td></tr>
+          <caption class="sr-only">개인정보 수집·이용 안내</caption>
+          <tr><th scope="row">수집 목적</th><td>단과반 수강 신청 접수, 신청 확인 및 수업 안내 연락</td></tr>
+          <tr><th scope="row">수집 항목</th><td>신청자 이름, 전화번호</td></tr>
+          <tr><th scope="row">보유 기간</th><td>신청한 프로그램 운영 기간이 끝나면 지체 없이 파기 (최대 1년)</td></tr>
+          <tr><th scope="row">전달 방법</th><td>입력한 내용은 구글(Google) 스프레드시트에 저장되고, 담당자 이메일로 전달됩니다.</td></tr>
         </table>
         <p>개인정보 수집·이용에 동의하지 않을 권리가 있습니다. 다만 동의하지 않으면 수강 신청을 할 수 없습니다.</p>
       </div>
       <label class="check">
-        <input type="checkbox" name="개인정보 동의" id="f-agree" value="동의함" required>
+        <input type="checkbox" name="개인정보 동의" id="f-agree" aria-describedby="err-agree" value="동의함" required>
         <span>위 내용을 읽었으며 개인정보 수집·이용에 동의합니다.</span>
       </label>
-      <small class="err" data-for="f-agree">개인정보 수집·이용에 동의해야 신청할 수 있어요.</small>
+      <small class="err" id="err-agree" data-for="f-agree">개인정보 수집·이용에 동의해야 신청할 수 있어요.</small>
     </fieldset>
 
     <p class="form-msg" id="apply-msg" role="status" aria-live="polite"></p>
@@ -283,5 +299,6 @@
 </dialog>
 
 <script src="apply.js"></script>
+<script src="tts.js"></script>
 </body>
 </html>
