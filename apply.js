@@ -4,6 +4,8 @@
 (function () {
   var RECIPIENT = 'jungnang2019@daum.net';
   var ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT;
+  var NATIVE_ENDPOINT = 'https://formsubmit.co/' + RECIPIENT;
+  var DONE_KEY = 'apply-done-text';
   var TIMES = { '월': '14:00~16:00', '화': '14:00~16:00', '수': '14:00~16:00', '목': '14:00~16:00' };
 
   var dialog = document.getElementById('apply-dialog');
@@ -15,6 +17,7 @@
   var phoneEl = document.getElementById('f-phone');
   var agreeEl = document.getElementById('f-agree');
   var current = null;
+  var navigating = false;
 
   function open(btn) {
     current = {
@@ -101,6 +104,45 @@
     });
   });
 
+  // 일반 양식 제출: 메일 서비스 페이지로 이동했다가 제출이 끝나면 이 사이트로 돌아옴
+  function submitNative(data) {
+    var f = document.createElement('form');
+    f.method = 'POST';
+    f.action = NATIVE_ENDPOINT;
+    f.acceptCharset = 'UTF-8';
+    f.style.display = 'none';
+    data.forEach(function (v, k) {
+      if (k === '_next') return;
+      var i = document.createElement('input');
+      i.type = 'hidden'; i.name = k; i.value = v;
+      f.appendChild(i);
+    });
+    var next = document.createElement('input');
+    next.type = 'hidden'; next.name = '_next';
+    next.value = location.origin + location.pathname + '?applied=1#status';
+    f.appendChild(next);
+    try {
+      sessionStorage.setItem(DONE_KEY, current.day + '요일 ' + current.program + (current.full ? ' 대기 신청' : ' 신청') +
+        '이 접수되었어요. 확인 후 ' + phoneEl.value + '(으)로 연락드릴게요.');
+    } catch (e) {}
+    msg.textContent = '메일 서비스로 이동해서 보내는 중이에요…';
+    msg.className = 'form-msg';
+    navigating = true;
+    document.body.appendChild(f);
+    f.submit();
+  }
+
+  // 일반 제출 후 돌아왔을 때 완료 화면 보여주기
+  if (/[?&]applied=1/.test(location.search)) {
+    var savedText = '';
+    try { savedText = sessionStorage.getItem(DONE_KEY) || ''; sessionStorage.removeItem(DONE_KEY); } catch (e) {}
+    form.hidden = true;
+    done.hidden = false;
+    document.getElementById('apply-done-text').textContent = savedText || '신청이 접수되었어요. 확인 후 연락드릴게요.';
+    if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+    history.replaceState(null, '', location.pathname + '#status');
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validate()) return;
@@ -154,11 +196,15 @@
         } else if (err && err.server) {
           showError('신청서를 보내지 못했어요. 잠시 후 다시 시도해 주세요. (메일 서비스 응답: ' + m + ')');
         } else {
-          showError('메일 서비스에 연결하지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.');
+          // 브라우저가 응답을 받지 못함(CORS 차단, 광고 차단 등) -> 일반 양식 제출로 다시 보냄
+          if (window.console) console.warn('[신청 전송] AJAX 실패, 일반 제출로 전환', err);
+          submitNative(data);
+          return;
         }
         if (window.console) console.warn('[신청 전송 실패]', err);
       })
       .finally(function () {
+        if (navigating) return;
         submitBtn.disabled = false;
         submitBtn.textContent = '제출하기';
       });
