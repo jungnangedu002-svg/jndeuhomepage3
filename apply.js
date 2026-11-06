@@ -1,11 +1,13 @@
 // 단과반 수강 신청 창
-// 제출 내용은 FormSubmit(https://formsubmit.co)을 통해 아래 주소로 메일 발송됩니다.
-// 받는 메일 주소를 바꾸려면 RECIPIENT만 수정하세요.
+// 제출 내용은 FormSubmit(https://formsubmit.co)을 통해 메일로 발송됩니다.
+//
+// FORM_ID: 처음에는 받는 메일 주소를 그대로 씁니다.
+//   활성화를 마치면 FormSubmit이 보내주는 메일에 무작위 문자열(예: 3f9a1c...)이 있는데,
+//   그 값으로 바꿔 넣으면 페이지 소스에 메일 주소가 드러나지 않아 스팸 메일을 줄일 수 있습니다.
 (function () {
-  var RECIPIENT = 'jungnang2019@daum.net';
-  var ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT;
-  var NATIVE_ENDPOINT = 'https://formsubmit.co/' + RECIPIENT;
-  var DONE_KEY = 'apply-done-text';
+  var RECIPIENT = 'jungnang2019@daum.net';   // 안내 문구에 보여줄 받는 주소
+  var FORM_ID = 'jungnang2019@daum.net';     // ← 활성화 후 무작위 문자열로 바꾸면 더 안전
+  var ENDPOINT = 'https://formsubmit.co/ajax/' + FORM_ID;
   var TIMES = { '월': '14:00~16:00', '화': '14:00~16:00', '수': '14:00~16:00', '목': '14:00~16:00' };
 
   var dialog = document.getElementById('apply-dialog');
@@ -17,7 +19,6 @@
   var phoneEl = document.getElementById('f-phone');
   var agreeEl = document.getElementById('f-agree');
   var current = null;
-  var navigating = false;
 
   function open(btn) {
     current = {
@@ -104,45 +105,6 @@
     });
   });
 
-  // 일반 양식 제출: 메일 서비스 페이지로 이동했다가 제출이 끝나면 이 사이트로 돌아옴
-  function submitNative(data) {
-    var f = document.createElement('form');
-    f.method = 'POST';
-    f.action = NATIVE_ENDPOINT;
-    f.acceptCharset = 'UTF-8';
-    f.style.display = 'none';
-    data.forEach(function (v, k) {
-      if (k === '_next') return;
-      var i = document.createElement('input');
-      i.type = 'hidden'; i.name = k; i.value = v;
-      f.appendChild(i);
-    });
-    var next = document.createElement('input');
-    next.type = 'hidden'; next.name = '_next';
-    next.value = location.origin + location.pathname + '?applied=1#status';
-    f.appendChild(next);
-    try {
-      sessionStorage.setItem(DONE_KEY, current.day + '요일 ' + current.program + (current.full ? ' 대기 신청' : ' 신청') +
-        '이 접수되었어요. 확인 후 ' + phoneEl.value + '(으)로 연락드릴게요.');
-    } catch (e) {}
-    msg.textContent = '메일 서비스로 이동해서 보내는 중이에요…';
-    msg.className = 'form-msg';
-    navigating = true;
-    document.body.appendChild(f);
-    f.submit();
-  }
-
-  // 일반 제출 후 돌아왔을 때 완료 화면 보여주기
-  if (/[?&]applied=1/.test(location.search)) {
-    var savedText = '';
-    try { savedText = sessionStorage.getItem(DONE_KEY) || ''; sessionStorage.removeItem(DONE_KEY); } catch (e) {}
-    form.hidden = true;
-    done.hidden = false;
-    document.getElementById('apply-done-text').textContent = savedText || '신청이 접수되었어요. 확인 후 연락드릴게요.';
-    if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
-    history.replaceState(null, '', location.pathname + '#status');
-  }
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validate()) return;
@@ -196,15 +158,12 @@
         } else if (err && err.server) {
           showError('신청서를 보내지 못했어요. 잠시 후 다시 시도해 주세요. (메일 서비스 응답: ' + m + ')');
         } else {
-          // 브라우저가 응답을 받지 못함(CORS 차단, 광고 차단 등) -> 일반 양식 제출로 다시 보냄
-          if (window.console) console.warn('[신청 전송] AJAX 실패, 일반 제출로 전환', err);
-          submitNative(data);
-          return;
+          // 응답을 전혀 받지 못함: FormSubmit 서버 장애, 인터넷 연결 문제, 광고 차단 기능 등
+          showError('메일 서비스(FormSubmit)가 지금 응답하지 않아요. 잠시 후 다시 시도해 주세요. 계속 안 되면 광고 차단 기능을 끄고 시도하거나 담당자에게 전화로 신청해 주세요.');
         }
         if (window.console) console.warn('[신청 전송 실패]', err);
       })
       .finally(function () {
-        if (navigating) return;
         submitBtn.disabled = false;
         submitBtn.textContent = '제출하기';
       });
